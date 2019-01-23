@@ -9,7 +9,7 @@ df_record = pd.read_csv('record.csv')
 # df_data = pd.DataFrame(columns=['订单号', '商品名称', '商品一级分类', '订单创建时间'])
 
 data_file = open('data.csv', 'w', encoding='utf-8')
-data_file.write(','.join(['订单号', '商品名称', '商品一级分类', '订单创建时间']) + '\n')
+data_file.write(','.join(['订单号', '商品名称', '商品一级分类', '订单创建时间', '商品数量', '商品单位', '商品实收金额']) + '\n')
 
 record_time_dict = dict()
 
@@ -26,19 +26,27 @@ for index, row in df_record.iterrows():
     #     print(name, quantity)
 
 for index, row in df_item.iterrows():
-    record_id = row['订单号']
+    record_id = str(row['订单号'])
     item_name = str(row['商品名称'])
     item_type = str(row['商品一级分类'])
+
+    item_number = row['商品数量']
+    item_unit = str(row['商品单位'])
+    item_total = row['商品实际成交金额']
+
     if record_id not in record_time_dict:
         # print('error: record id not found')
         continue
+
     if item_name.startswith(('特价水果', '直接付款')):
         continue
+
     if '水果' not in item_type:
         continue
     data_file.write(','.join([
         str(record_id), str(item_name),
-        str(item_type), str(record_time_dict[record_id])
+        str(item_type), str(record_time_dict[record_id]),
+        str(item_number), str(item_unit), str(item_total)
     ]) + '\n')
     # df_data = df_data.append({
     #     '订单号': record_id,
